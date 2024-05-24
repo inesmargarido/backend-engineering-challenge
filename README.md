@@ -4,8 +4,9 @@
 Python 3.7.x or higher
 
 ## How to run:
-First, run this command to be able to execute the program from any directory, without the .py extension, and without needing a python call:
+First, run this command to be able to execute the program from any directory, without the .py extension, and without needing a python call (using the setuptools library):
 ```pip install -e .```
+
 
 Run the program like this:
 ```unbabel_cli --input_file input.json --window_size 10``` 
