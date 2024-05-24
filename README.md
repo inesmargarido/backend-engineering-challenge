@@ -15,7 +15,7 @@ Run the program like this:
 
 ## How to test:
 Use an input file like the one on this folder - test.json - and choose a window size.
-To check againsted the expected output in the challenge instructions, use:
+To check against the expected output in the challenge instructions, use:
 ```unbabel_cli test.json 10``` 
 
 ## Input format:
