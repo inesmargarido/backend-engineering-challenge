@@ -23,7 +23,7 @@ def calculate_moving_averages(events, window_minutes):
   end_time = datetime.fromisoformat(events[-1]['timestamp']).replace(second=0, microsecond=0) + timedelta(minutes=1)
 
   current_minute = start_time # initiate the iterator for the outside loop 
-  durations = []
+  durations = [] # initiate the array to keep the durations to aggregate in each minute
 
   count = -1 # set the count of passed minutes to -1, so that only after the X'th minute it will reset the calculations
   while current_minute <= end_time:
@@ -32,24 +32,24 @@ def calculate_moving_averages(events, window_minutes):
     if count == window_minutes:
       durations = [durations[-1]]
 
-    for event in events:
+    for event in events: # in each minute, search for translations
       timestamp = datetime.fromisoformat(event['timestamp']).replace(second=0, microsecond=0) + timedelta(minutes=1)
-      if  timestamp == current_minute:
-        durations.append(event['duration'])
-    if len(durations) > 0:
-      avg_per_min = sum(durations)/len(durations)
+      if  timestamp == current_minute: # if there is a translation in this current minute
+        durations.append(event['duration']) # add durations of translation to the array
+    if len(durations) > 0: # if there are any translations
+      avg_per_min = sum(durations)/len(durations) # calculate average
     else:
-      avg_per_min = 0
-    print(f'{{"date": "{current_minute.isoformat()}", "average_delivery_time": "{avg_per_min:.1f}"}}')
+      avg_per_min = 0 # if no translations in this minute, the average is 0
+    print(f'{{"date": "{current_minute.isoformat()}", "average_delivery_time": "{avg_per_min:.1f}"}}') # print the result for this minute
 
-    current_minute += timedelta(minutes=1)
-    count += 1
+    current_minute += timedelta(minutes=1) # move to the next minute
+    count += 1 # counter for the loop
 
 
 def main():
-  args = parse_args()
-  events = read_events(args.input_file)
-  moving_averages = calculate_moving_averages(events, args.window_minutes)
+  args = parse_args() # get arguments
+  events = read_events(args.input_file) # read json events
+  moving_averages = calculate_moving_averages(events, args.window_minutes) # calculate moving averages
 
 if __name__ == "__main__":
   main()
