@@ -50,7 +50,7 @@ The output will be provided in a JSON file named 'output.json', in the following
 {"date": "2018-12-26 18:23:00", "average_delivery_time": 31.0}
 {"date": "2018-12-26 18:24:00", "average_delivery_time": 42.5}
 ```
-
+An example of output file is provided in this folder.
 
 
 
