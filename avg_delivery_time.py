@@ -1,6 +1,7 @@
 import json
 import argparse
 from datetime import datetime, timedelta
+from collections import deque
 
 # function to parse arguments
 def parse_args():
@@ -17,39 +18,52 @@ def read_events(input_file):
 
 # main function to calculate the average each minute
 def calculate_moving_averages(events, window_minutes):
-  # get the first event and round down to the minute
-  start_time = datetime.fromisoformat(events[0]['timestamp']).replace(second=0, microsecond=0) 
-  # get the latest event and round up to the next minute (where the duration will enter the avg calculation)
-  end_time = datetime.fromisoformat(events[-1]['timestamp']).replace(second=0, microsecond=0) + timedelta(minutes=1)
+
+  # get only timestamp and duration of each event
+  events = [(datetime.fromisoformat(event['timestamp']), event['duration']) for event in events]
+  
+  # get the first event's timestamp (rounded down to the minute)
+  start_time = events[0][0].replace(second=0, microsecond=0)
+  # get the latest event's timestamp and round up to the next minute
+  end_time = events[-1][0].replace(second=0, microsecond=0) + timedelta(minutes=1)
 
   current_minute = start_time # initiate the iterator for the outside loop 
-  durations = [] # initiate the array to keep the durations to aggregate in each minute
+  durations = deque() # manage durations for the calculations
+  i = 0 # iterator for events
+  current_window_count = 0 # number of durations in the current window
+  current_window_sum = 0 # sum of durations in the current window
+  avg_per_min = 0 # variable to store the average calculation
+  print_count = 0 # number of outputs already printed
 
-  count = -1 # set the count of passed minutes to -1, so that only after the X'th minute it will reset the calculations
   while current_minute <= end_time:
+    # add durations to the deque which correspond to translations in the current minute
+    while i < len(events) and (current_minute - timedelta(minutes=1) < events[i][0] <= current_minute):
+      durations.append(events[i][1])
+      current_window_sum += events[i][1]
+      current_window_count += 1
+      i += 1
     
-    # if the window_size is reached, reset the durations array with only the last duration
-    if count == window_minutes:
-      durations = [durations[-1]]
+    # calculate current average
+    avg_per_min = current_window_sum/current_window_count if current_window_count > 0 else 0
+  
+    # print output
+    print(f'{{"date": "{current_minute.isoformat()}", "average_delivery_time": "{avg_per_min:.1f}"}}')
 
-    for event in events: # in each minute, search for translations
-      timestamp = datetime.fromisoformat(event['timestamp']).replace(second=0, microsecond=0) + timedelta(minutes=1)
-      if  timestamp == current_minute: # if there is a translation in this current minute
-        durations.append(event['duration']) # add durations of translation to the array
-    if len(durations) > 0: # if there are any translations
-      avg_per_min = sum(durations)/len(durations) # calculate average
-    else:
-      avg_per_min = 0 # if no translations in this minute, the average is 0
-    print(f'{{"date": "{current_minute.isoformat()}", "average_delivery_time": "{avg_per_min:.1f}"}}') # print the result for this minute
+    print_count += 1
+    current_minute += timedelta(minutes=1)
 
-    current_minute += timedelta(minutes=1) # move to the next minute
-    count += 1 # counter for the loop
+    # if we reach the end of the window, slide window to the right 
+    if print_count > window_minutes:
+      removed_duration = durations.popleft() # remove the oldest duration from the deque
+      current_window_sum -= removed_duration # remove from the sum
+      current_window_count -= 1 # remove from the count
+      print_count = 0 # reset counter
 
 
 def main():
-  args = parse_args() # get arguments
-  events = read_events(args.input_file) # read json events
-  moving_averages = calculate_moving_averages(events, args.window_minutes) # calculate moving averages
+  args = parse_args()
+  events = read_events(args.input_file)
+  moving_averages = calculate_moving_averages(events, args.window_minutes)
 
 if __name__ == "__main__":
   main()
