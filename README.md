@@ -56,4 +56,3 @@ An example of output file is provided in this folder.
 + The events array is pre-processed before the loop starts, and we only keep the necessary information: timestamps and duration.
 + Events are parsed only once.
 + The durations for the average calculation are kept in a deque(), so that we can easily remove the oldest translation when the time window moves further.
-+ 
