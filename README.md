@@ -20,18 +20,20 @@ unbabel_cli --input_file input.json --window_size 10
 ## How to test:
 Use an input file like the one on this folder - test.json - and choose a window size.
 To check against the expected output in the challenge instructions, use:
-```pythpon
+```python
 unbabel_cli test.json 10
-``` 
+```
 
 ## Input format:
+The input format should be like this:
 ```json
 {"timestamp": "2018-12-26 18:11:08.509654", "translation_id": "5aa5b2f39f7254a75aa5", "source_language": "en", "target_language": "fr", "client_name": "airliberty", "event_name": "translation_delivered", "nr_words": 30, "duration": 20}
 {"timestamp": "2018-12-26 18:15:19.903159", "translation_id": "5aa5b2f39f7254a75aa4", "source_language": "en", "target_language": "fr", "client_name": "airliberty", "event_name": "translation_delivered", "nr_words": 30, "duration": 31}
 {"timestamp": "2018-12-26 18:23:19.903159", "translation_id": "5aa5b2f39f7254a75bb3", "source_language": "en", "target_language": "fr", "client_name": "taxi-eats", "event_name": "translation_delivered", "nr_words": 100, "duration": 54}
 ```
 
-## Output format
+## Output:
+The output will be provided in a JSON file named 'output.json', in the following format:
 ```json
 {"date": "2018-12-26 18:11:00", "average_delivery_time": 0.0}
 {"date": "2018-12-26 18:12:00", "average_delivery_time": 20.0}
@@ -48,7 +50,6 @@ unbabel_cli test.json 10
 {"date": "2018-12-26 18:23:00", "average_delivery_time": 31.0}
 {"date": "2018-12-26 18:24:00", "average_delivery_time": 42.5}
 ```
-The output will appear in the command line.
 
 
 
