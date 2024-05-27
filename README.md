@@ -4,19 +4,25 @@
 Python 3.7.x or higher
 
 ## How to run:
-First, run this command to be able to execute the program from any directory, without the .py extension, and without needing a python call (using the setuptools library):
-```pip install -e .```
+First, run this command in the directory where the 'setup.py' file is located to install the package:
+```python
+pip install .
+```
 
 
 Run the program like this:
-```unbabel_cli --input_file input.json --window_size 10``` 
+```python
+unbabel_cli --input_file input.json --window_size 10
+``` 
 + input.json is the input file, in the format described in the challenge
 + window_size is the number of minutes on which to perform the moving average calculation
 
 ## How to test:
 Use an input file like the one on this folder - test.json - and choose a window size.
 To check against the expected output in the challenge instructions, use:
-```unbabel_cli test.json 10``` 
+```pythpon
+unbabel_cli test.json 10
+``` 
 
 ## Input format:
 ```json
